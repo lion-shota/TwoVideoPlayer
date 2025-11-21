@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Video Player</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>2つの動画を並べて再生</h1>
+
+    <div class="video-container">
+        <div class="video-wrapper">
+            <input type="file" id="videoInput1" accept="video/*">
+            <video id="videoPlayer1" controls muted></video>
+        </div>
+        <div class="video-wrapper">
+            <input type="file" id="videoInput2" accept="video/*">
+            <video id="videoPlayer2" controls muted></video>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="playAllBtn">全て再生</button>
+        <button id="pauseAllBtn">全て一時停止</button>
+        <button id="syncBtn">同期再生 (テスト)</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
