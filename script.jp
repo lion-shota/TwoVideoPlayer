@@ -1,0 +1,75 @@
+document.addEventListener('DOMContentLoaded', () => {
+    // HTML要素を取得
+    const videoInput1 = document.getElementById('videoInput1');
+    const videoPlayer1 = document.getElementById('videoPlayer1');
+    const videoInput2 = document.getElementById('videoInput2');
+    const videoPlayer2 = document.getElementById('videoPlayer2');
+    const playAllBtn = document.getElementById('playAllBtn');
+    const pauseAllBtn = document.getElementById('pauseAllBtn');
+    const syncBtn = document.getElementById('syncBtn');
+
+    // 動画ファイルを読み込む関数
+    const loadVideo = (inputElement, videoPlayerElement) => {
+        inputElement.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const objectURL = URL.createObjectURL(file);
+                videoPlayerElement.src = objectURL;
+                videoPlayerElement.load(); // 動画をロード
+                console.log(`動画 "${file.name}" を読み込みました。`);
+            }
+        });
+    };
+
+    // 各動画プレイヤーに読み込み機能を割り当てる
+    loadVideo(videoInput1, videoPlayer1);
+    loadVideo(videoInput2, videoPlayer2);
+
+    // 全ての動画を再生
+    playAllBtn.addEventListener('click', () => {
+        // Promise.all を使用して、両方の動画が再生開始するのを待つ
+        Promise.all([
+            videoPlayer1.play().catch(e => console.error("Video 1 play failed:", e)),
+            videoPlayer2.play().catch(e => console.error("Video 2 play failed:", e))
+        ]).then(() => {
+            console.log("全ての動画が再生を開始しました。");
+        }).catch(e => {
+            console.error("再生開始に問題が発生しました:", e);
+        });
+    });
+
+    // 全ての動画を一時停止
+    pauseAllBtn.addEventListener('click', () => {
+        videoPlayer1.pause();
+        videoPlayer2.pause();
+        console.log("全ての動画を一時停止しました。");
+    });
+
+    // 動画を同期させる (簡易的な方法)
+    // この方法は、動画のロード時間やバッファリングによって完全に同期しない場合があります。
+    // より厳密な同期には、複雑なロジックやサーバーサイドの協力が必要になることがあります。
+    syncBtn.addEventListener('click', () => {
+        // 現在の再生位置を比較し、より早い方を基準に合わせる
+        const time1 = videoPlayer1.currentTime;
+        const time2 = videoPlayer2.currentTime;
+
+        if (time1 !== time2) {
+            const targetTime = Math.min(time1, time2); // より早い方に合わせる
+            videoPlayer1.currentTime = targetTime;
+            videoPlayer2.currentTime = targetTime;
+            console.log(`動画の再生位置を ${targetTime.toFixed(2)} 秒に同期しました。`);
+        } else {
+            console.log("動画は既に同期されています。");
+        }
+        // 再生が一時停止している場合は再生を開始
+        playAllBtn.click();
+    });
+
+    // （オプション）動画が最後まで再生されたときにイベントを処理
+    videoPlayer1.addEventListener('ended', () => {
+        console.log("Video 1 の再生が終了しました。");
+    });
+    videoPlayer2.addEventListener('ended', () => {
+        console.log("Video 2 の再生が終了しました。");
+    });
+});
